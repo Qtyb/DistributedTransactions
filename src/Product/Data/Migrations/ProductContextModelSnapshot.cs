@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductApi.Data.Context;
 
-namespace ProductApi.Migrations
+namespace ProductApi.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
     partial class ProductContextModelSnapshot : ModelSnapshot

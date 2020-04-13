@@ -46,13 +46,14 @@ namespace ProductApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, ProductRequestDto product)
+        public async Task<IActionResult> PutProduct(int id, ProductRequestDto productRequestDto)
         {
-            if (id != product.Id)
+            if (id != productRequestDto.Id)
             {
                 return BadRequest();
             }
 
+            var product = _mapper.Map<Product>(productRequestDto);
             _context.Entry(product).State = EntityState.Modified;
 
             try

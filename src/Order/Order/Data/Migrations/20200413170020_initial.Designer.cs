@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProductApi.Data.Context;
+using OrderApi.Data.Context;
 
-namespace ProductApi.Data.Migrations
+namespace OrderApi.Data.Migrations
 {
-    [DbContext(typeof(ProductContext))]
-    [Migration("20200412124929_initial")]
+    [DbContext(typeof(OrderContext))]
+    [Migration("20200413170020_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace ProductApi.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ProductApi.Data.Entities.Product", b =>
+            modelBuilder.Entity("OrderApi.Data.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace ProductApi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Orders");
                 });
 #pragma warning restore 612, 618
         }
