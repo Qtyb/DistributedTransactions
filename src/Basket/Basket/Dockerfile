@@ -2,21 +2,21 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 6010
+EXPOSE 6011
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Basket.csproj", ""]
-RUN dotnet restore "./Basket.csproj"
+COPY ["BasketApi.csproj", ""]
+RUN dotnet restore "./BasketApi.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Basket.csproj" -c Release -o /app/build
+RUN dotnet build "BasketApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Basket.csproj" -c Release -o /app/publish
+RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Basket.dll"]
+ENTRYPOINT ["dotnet", "BasketApi.dll"]
