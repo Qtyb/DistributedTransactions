@@ -2,17 +2,18 @@
 Project for university telecomunications conference
 
 ## Services
-Service | Port
---- | --- | ---
-Product | 6000
-Basket | 6010
-Order | 6020
-Shipping | 6030
-User |  6040
-Db | 1433
-RabbitMq | 5672
-RabbitMqGui | 15672
-Jenkins | 8080
+| Service       | Port          |
+| ------------- |:-------------:|
+| Product       | 6000          |
+| Basket        | 6010          |
+| Order         | 6020          |
+| Shipping      | 6030          |
+| User          | 6040          |
+| Db            | 1433          |
+| RabbitMq      | 5672          |
+| RabbitMqGui   | 15672         |
+| Jenkins       | 8080          |
+
 
 ## Docker configuration
 For now RabbitMq Jenkins MsSql Server are configured in docker-compose.yml
@@ -27,7 +28,7 @@ You can run him with docker typing in /src/Basket/Basket
 docker build --tag basketwebapi:1.0 .
 docker run --publish 6010:80 --detach --name basketwebapi basketwebapi:1.0
 ```
-Then browse to [http://hostaddress:6010/swagger](http://hostaddress:6010/swagger)
+Then browse to [http://localhost:6010/swagger](http://localhost:6010/swagger)
 
 ## Database migrations
 Clean database need migrations applied.
