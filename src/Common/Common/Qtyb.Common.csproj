@@ -2,11 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Qtyb</Authors>
+    <Product>Qtyb</Product>
+    <Version>1.0.1</Version>
+    <Description>
+      1.0.0 - IGuidBasedEntity
+      1.0.1 - NamespaceChange
+    </Description>
+    <PackageId>Qtyb.Common</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Domain\" />
-    <Folder Include="Data\" />
     <Folder Include="WebApi\" />
     <Folder Include="Tests\" />
     <Folder Include="Repositories\" />
