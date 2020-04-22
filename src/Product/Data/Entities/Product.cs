@@ -1,4 +1,4 @@
-﻿using ProductApi.Data.Interfaces;
+﻿using Qtyb.Common.Data.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
