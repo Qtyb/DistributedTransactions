@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BasketApi.Data.Context;
+using BasketApi.Services;
+using BasketApi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -40,6 +42,9 @@ namespace BasketApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = nameof(BasketApi), Version = "v1" });
             });
 
+            //MOVE TO EXTENSION METHOD
+            services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
+            services.AddTransient<IRabbitMqSubscriberService, RabbitMqSubscriberService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +71,10 @@ namespace BasketApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            //Move to extension method
+            var subsriberService = app.ApplicationServices.GetRequiredService<IRabbitMqSubscriberService>();
+            subsriberService.Subscribe(new List<string> { "ProductCreated" }); //REPLACE WITH NAME OF EVENT CLASS
         }
     }
 }

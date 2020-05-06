@@ -44,3 +44,10 @@ You can apply migrations for one service going to service solution directory and
 ```
 dotnet ef database update
 ```
+
+## RabbitMq
+Each microservice will have his own queue, which it will listen on.
+All microservices will use the same direct exchange to send messages.
+
+### Messages
+ - ProductCreated
