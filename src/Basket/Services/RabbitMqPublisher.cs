@@ -2,13 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BasketApi.Services
 {
@@ -18,7 +13,6 @@ namespace BasketApi.Services
         private readonly ILogger<RabbitMqPublisher> _logger;
         private readonly IConfigurationSection _rabbitMqConfig;
         private readonly string _exchangeName = "distributedTransactions.exchange"; //GET FROM CONFIGURATION
-
 
         public RabbitMqPublisher(
             IRabbitMqConnection rabbitMqConnection,
@@ -35,11 +29,8 @@ namespace BasketApi.Services
             _logger.LogInformation($"{nameof(RabbitMqPublisher)}.{nameof(Publish)} with " +
                 $"\n{nameof(routingKey)}: {routingKey}\n{nameof(message)}: {message}");
 
-            var connection = _rabbitMqConnection.Connect();
-            using (var channel = connection.CreateModel())
-            {
-                SendRabbitMqMessage(message, routingKey, channel);
-            }
+            var channel = _rabbitMqConnection.Connect();
+            SendRabbitMqMessage(message, routingKey, channel);
         }
 
         public void Publish<T>(T objectToSend, string routingKey)
@@ -47,12 +38,10 @@ namespace BasketApi.Services
             _logger.LogInformation($"{nameof(RabbitMqPublisher)}.{nameof(Publish)} with " +
                 $"\n{nameof(routingKey)}: {routingKey}\n{nameof(objectToSend)}: {typeof(T).Name}");
 
-            var connection = _rabbitMqConnection.Connect();
-            using (var channel = connection.CreateModel())
-            {
-                var message = JsonSerializer.Serialize(objectToSend);
-                SendRabbitMqMessage(message, routingKey, channel);
-            }
+            var message = JsonSerializer.Serialize(objectToSend);
+
+            var channel = _rabbitMqConnection.Connect();
+            SendRabbitMqMessage(message, routingKey, channel);
 
             _logger.LogInformation($"{nameof(RabbitMqPublisher)}.{nameof(Publish)} with {nameof(objectToSend)}: {typeof(T).Name} successfuly published");
         }

@@ -21,7 +21,10 @@ namespace BasketApi
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
-                    logging.AddConsole();
+                    logging.AddConsole(opt =>
+                    {
+                        opt.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Systemd;
+                    });
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

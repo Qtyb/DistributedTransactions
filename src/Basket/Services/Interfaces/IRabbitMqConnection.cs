@@ -8,6 +8,6 @@ namespace BasketApi.Services.Interfaces
 {
     public interface IRabbitMqConnection
     {
-        IConnection Connect();
+        IModel Connect();
     }
 }

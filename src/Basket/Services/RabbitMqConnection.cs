@@ -10,6 +10,7 @@ namespace BasketApi.Services
         private readonly IConfigurationSection _rabbitMqConfig;
         private readonly ILogger<RabbitMqConnection> _logger;
         private IConnection _connection;
+        private IModel _channel;
 
         public RabbitMqConnection(
             IConfiguration configuration,
@@ -19,7 +20,7 @@ namespace BasketApi.Services
             _logger = logger;
         }
 
-        public IConnection Connect()
+        public IModel Connect()
         {
             _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(Connect)} invoked");
             if (_connection is null || _connection.IsOpen is false)
@@ -30,7 +31,13 @@ namespace BasketApi.Services
                 InitializeConnection();
             }
 
-            return _connection;
+            if(_channel is null || _channel.IsClosed)
+            {
+                _channel?.Dispose();
+                _channel = _connection.CreateModel();
+            }
+
+            return _channel;
         }
 
         private void InitializeConnection()
@@ -42,5 +49,7 @@ namespace BasketApi.Services
 
             _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(InitializeConnection)} connection initialized");
         }
+
+
     }
 }
