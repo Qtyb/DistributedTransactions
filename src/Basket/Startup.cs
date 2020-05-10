@@ -45,6 +45,7 @@ namespace BasketApi
             //MOVE TO EXTENSION METHOD
             services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
             services.AddTransient<IRabbitMqSubscriberService, RabbitMqSubscriberService>();
+            services.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

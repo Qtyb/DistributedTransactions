@@ -11,7 +11,7 @@ namespace BasketApi.Services
         private readonly IRabbitMqConnection _rabbitMqConnection;
         private readonly IConfiguration _configuration;
         private readonly string _queueName = nameof(BasketApi); //GET FROM CONFIGURATION
-        private readonly string _exchangeName = "distributedTransactions.exchange";
+        private readonly string _exchangeName = "distributedTransactions.exchange"; //GET FROM CONFIGURATION
 
         public RabbitMqSubscriberService(
             IRabbitMqConnection rabbitMqConnection,
