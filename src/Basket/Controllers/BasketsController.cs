@@ -10,6 +10,7 @@ using BasketApi.Data.Entites;
 using BasketApi.Domain.Dtos.Request;
 using BasketApi.Domain.Dtos.Response;
 using AutoMapper;
+using BasketApi.Services.Interfaces;
 
 namespace BasketApi.Controllers
 {
@@ -18,14 +19,32 @@ namespace BasketApi.Controllers
     public class BasketsController : ControllerBase
     {
         private readonly BasketContext _context;
+        private readonly IRabbitMqPublisher _rabbitMqPublisher;
         private readonly IMapper _mapper;
 
         public BasketsController(
             BasketContext context,
+            IRabbitMqPublisher rabbitMqPublisher, 
             IMapper mapper)
         {
             _context = context;
+            _rabbitMqPublisher = rabbitMqPublisher;
             _mapper = mapper;
+        }
+
+        [HttpGet("sendObj")]
+        public ActionResult SendObj()
+        {
+            var basket = new Basket { Guid = Guid.NewGuid(), Id = 5, Name = "Send Test" };
+            _rabbitMqPublisher.Publish(basket, "ProductCreated");
+            return Ok();
+        }
+
+        [HttpGet("sendTxt")]
+        public ActionResult SendTxt()
+        {
+            _rabbitMqPublisher.Publish("message send", "ProductCreated");
+            return Ok();
         }
 
         [HttpGet]

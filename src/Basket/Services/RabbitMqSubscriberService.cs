@@ -1,5 +1,6 @@
-﻿using BasketApi.Domain.Events;
+﻿using BasketApi.Domain.Events.Subscribe;
 using BasketApi.Services.Interfaces;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -16,6 +17,7 @@ namespace BasketApi.Services
     {
         private readonly IRabbitMqConnection _rabbitMqConnection;
         private readonly IConfiguration _configuration;
+        private readonly IMediator _mediator;
         private readonly ILogger<RabbitMqSubscriberService> _logger;
         private readonly string _queueName = nameof(BasketApi); //GET FROM CONFIGURATION
         private readonly string _exchangeName = "distributedTransactions.exchange"; //GET FROM CONFIGURATION
@@ -24,54 +26,56 @@ namespace BasketApi.Services
             IRabbitMqConnection rabbitMqConnection,
             IServiceProvider provider,
             IConfiguration configuration,
+            IMediator mediator,
             ILogger<RabbitMqSubscriberService> logger)
         {
             _rabbitMqConnection = rabbitMqConnection;
             _configuration = configuration;
+            _mediator = mediator;
             _logger = logger;
         }
 
-        public void Subscribe(IEnumerable<string> topics)
+        public void Subscribe<T>(string topic)
+            where T : class
         {
             var channel = _rabbitMqConnection.Connect();
 
             CreateExchange(channel, _exchangeName);
             CreateQueue(channel, _queueName);
 
-            foreach (var topic in topics)
+            _logger.LogInformation($"Subscribing for topic [{topic}]");
+            BindQueue(channel, topic);
+            InitializeConsumer(channel);
+            _logger.LogInformation($"Subscribed for topic [{topic}]");
+        }
+
+        private async Task OnEventReceived<T>(object sender, BasicDeliverEventArgs @event)
+        {
+            var channel = _rabbitMqConnection.Connect();
+            try
             {
-                _logger.LogInformation($"Subscribing for topic {topic}");
-                BindQueue(channel, topic);
-                CreateProductCreatedConsumer(channel);
-                _logger.LogInformation($"Subscribed for topic {topic}");
+                var body = Encoding.UTF8.GetString(@event.Body.ToArray());
+                //var message = JsonConvert.DeserializeObject<T>(body);
+                var message = JsonSerializer.Deserialize<T>(body);
+
+                await _mediator.Send(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving message from queue.");
+            }
+            finally
+            {
+                channel.BasicAck(@event.DeliveryTag, false);
             }
         }
 
-        //public void SubscribeToProductCreated(IModel channel)
-        //{
-        //    CreateConsumer(channel);
-        //}
-
-        private void CreateProductCreatedConsumer(IModel channel)
+        private void InitializeConsumer(IModel channel)
         {
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
-            {
-                _logger.LogInformation($"Received messgae");
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.Received += OnEventReceived<ProductCreated>;
 
-                var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body.ToArray());
-                _logger.LogInformation($"Consuming messgae {message}");
-                var productCreated = JsonSerializer.Deserialize<ProductCreated>(message);
-
-                //TODO Add action argument
-                //Action<ProductCreated> action
-                //action.Invoke(productCreated);
-
-            };
-            channel.BasicConsume(queue: _queueName,
-                                 autoAck: true,
-                                 consumer: consumer);
+            channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
         }
 
         private void CreateExchange(IModel channel, string exchangeName)

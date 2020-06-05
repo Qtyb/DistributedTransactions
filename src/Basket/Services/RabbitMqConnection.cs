@@ -31,8 +31,10 @@ namespace BasketApi.Services
                 InitializeConnection();
             }
 
-            if(_channel is null || _channel.IsClosed)
+            if (_channel is null || _channel.IsClosed)
             {
+                _logger.LogInformation($"{nameof(RabbitMqConnection)} is not established." +
+                    $"Trying to establish connection");
                 _channel?.Dispose();
                 _channel = _connection.CreateModel();
             }
@@ -43,13 +45,15 @@ namespace BasketApi.Services
         private void InitializeConnection()
         {
             _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(InitializeConnection)} invoked");
-            //GET FROM APPSETTINGS
-            var factory = new ConnectionFactory() { HostName = _rabbitMqConfig["Hostname"] };
+            //TODO 2: GET FROM APPSETTINGS
+            var factory = new ConnectionFactory()
+            {
+                HostName = _rabbitMqConfig["Hostname"],
+                DispatchConsumersAsync = true
+            };
             _connection = factory.CreateConnection();
 
             _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(InitializeConnection)} connection initialized");
         }
-
-
     }
 }

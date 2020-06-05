@@ -1,21 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BasketApi.Data.Context;
+using BasketApi.Domain.Events.Subscribe;
 using BasketApi.Services;
 using BasketApi.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace BasketApi
 {
@@ -31,10 +27,11 @@ namespace BasketApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddDbContext<BasketContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("BasketContext")));
-            services.AddControllers();
 
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSwaggerGen(c =>
@@ -42,7 +39,7 @@ namespace BasketApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = nameof(BasketApi), Version = "v1" });
             });
 
-            //MOVE TO EXTENSION METHOD
+            //TODO 3: MOVE TO EXTENSION METHOD
             services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
             services.AddTransient<IRabbitMqSubscriberService, RabbitMqSubscriberService>();
             services.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
@@ -73,9 +70,9 @@ namespace BasketApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            //Move to extension method
+            //TODO 3: Move to extension method
             var subsriberService = app.ApplicationServices.GetRequiredService<IRabbitMqSubscriberService>();
-            subsriberService.Subscribe(new List<string> { "ProductCreated" }); //REPLACE WITH NAME OF EVENT CLASS
+            subsriberService.Subscribe<ProductCreated>("ProductCreated");
         }
     }
 }

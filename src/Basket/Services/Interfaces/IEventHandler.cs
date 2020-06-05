@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace BasketApi.Services.Interfaces
 {
-    public interface IRabbitMqPublisher
+    public interface IEventHandler<T> where T: class
     {
-        void Publish<T>(T objectToSend, string routingKey);
+        void Handle(T @event);
     }
 }
