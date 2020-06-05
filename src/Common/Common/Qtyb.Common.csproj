@@ -5,19 +5,28 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Qtyb</Authors>
     <Product>Qtyb</Product>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>
-      1.0.0 - IGuidBasedEntity
+      1.0.2 - RabbitMq event bus added
       1.0.1 - NamespaceChange
+      1.0.0 - IGuidBasedEntity
     </Description>
     <PackageId>Qtyb.Common</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Domain\" />
+    <Folder Include="Services\" />
     <Folder Include="WebApi\" />
     <Folder Include="Tests\" />
     <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.0.0" />
   </ItemGroup>
 </Project>

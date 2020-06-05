@@ -1,9 +1,9 @@
-﻿using BasketApi.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Qtyb.Common.EventBus.RabbitMq.Interfaces;
 using RabbitMQ.Client;
 
-namespace BasketApi.Services
+namespace Qtyb.Common.EventBus.RabbitMq
 {
     public class RabbitMqConnection : IRabbitMqConnection
     {

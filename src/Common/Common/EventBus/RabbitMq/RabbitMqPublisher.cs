@@ -1,13 +1,14 @@
-﻿using BasketApi.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Qtyb.Common.EventBus.Interfaces;
+using Qtyb.Common.EventBus.RabbitMq.Interfaces;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace BasketApi.Services
+namespace Qtyb.Common.EventBus.RabbitMq
 {
-    public class RabbitMqPublisher : IRabbitMqPublisher
+    public class RabbitMqPublisher : IEventBusPublisher
     {
         private readonly IRabbitMqConnection _rabbitMqConnection;
         private readonly ILogger<RabbitMqPublisher> _logger;

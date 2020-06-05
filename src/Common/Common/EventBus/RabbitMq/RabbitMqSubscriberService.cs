@@ -1,38 +1,38 @@
-﻿using BasketApi.Domain.Events.Subscribe;
-using BasketApi.Services.Interfaces;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Qtyb.Common.EventBus.Interfaces;
+using Qtyb.Common.EventBus.RabbitMq.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace BasketApi.Services
+namespace Qtyb.Common.EventBus.RabbitMq
 {
-    public class RabbitMqSubscriberService : IRabbitMqSubscriberService
+    public class RabbitMqSubscriberService : IEventBusSubcriber
     {
         private readonly IRabbitMqConnection _rabbitMqConnection;
-        private readonly IConfiguration _configuration;
         private readonly IMediator _mediator;
         private readonly ILogger<RabbitMqSubscriberService> _logger;
-        private readonly string _queueName = nameof(BasketApi); //GET FROM CONFIGURATION
-        private readonly string _exchangeName = "distributedTransactions.exchange"; //GET FROM CONFIGURATION
+        private readonly string _queueName;
+        private readonly string _exchangeName;
 
         public RabbitMqSubscriberService(
             IRabbitMqConnection rabbitMqConnection,
-            IServiceProvider provider,
             IConfiguration configuration,
             IMediator mediator,
             ILogger<RabbitMqSubscriberService> logger)
         {
             _rabbitMqConnection = rabbitMqConnection;
-            _configuration = configuration;
             _mediator = mediator;
             _logger = logger;
+
+            var rabbitMqSettings = configuration.GetSection("RabbitMq");
+            _queueName = rabbitMqSettings["Queue"];
+            _exchangeName = rabbitMqSettings["Exchange"];
         }
 
         public void Subscribe<T>(string topic)
@@ -45,7 +45,7 @@ namespace BasketApi.Services
 
             _logger.LogInformation($"Subscribing for topic [{topic}]");
             BindQueue(channel, topic);
-            InitializeConsumer(channel);
+            InitializeConsumer<T>(channel);
             _logger.LogInformation($"Subscribed for topic [{topic}]");
         }
 
@@ -55,7 +55,6 @@ namespace BasketApi.Services
             try
             {
                 var body = Encoding.UTF8.GetString(@event.Body.ToArray());
-                //var message = JsonConvert.DeserializeObject<T>(body);
                 var message = JsonSerializer.Deserialize<T>(body);
 
                 await _mediator.Send(message);
@@ -70,10 +69,11 @@ namespace BasketApi.Services
             }
         }
 
-        private void InitializeConsumer(IModel channel)
+        private void InitializeConsumer<T>(IModel channel)
+            where T : class
         {
             var consumer = new AsyncEventingBasicConsumer(channel);
-            consumer.Received += OnEventReceived<ProductCreated>;
+            consumer.Received += OnEventReceived<T>;
 
             channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
         }

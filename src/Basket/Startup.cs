@@ -1,8 +1,6 @@
 using AutoMapper;
 using BasketApi.Data.Context;
 using BasketApi.Domain.Events.Subscribe;
-using BasketApi.Services;
-using BasketApi.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Qtyb.Common.EventBus.Extensions;
+using Qtyb.Common.EventBus.Interfaces;
 using System.Reflection;
 
 namespace BasketApi
@@ -39,10 +39,7 @@ namespace BasketApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = nameof(BasketApi), Version = "v1" });
             });
 
-            //TODO 3: MOVE TO EXTENSION METHOD
-            services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
-            services.AddTransient<IRabbitMqSubscriberService, RabbitMqSubscriberService>();
-            services.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
+            services.AddEventBus();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,7 +68,7 @@ namespace BasketApi
             });
 
             //TODO 3: Move to extension method
-            var subsriberService = app.ApplicationServices.GetRequiredService<IRabbitMqSubscriberService>();
+            var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubcriber>();
             subsriberService.Subscribe<ProductCreated>("ProductCreated");
         }
     }

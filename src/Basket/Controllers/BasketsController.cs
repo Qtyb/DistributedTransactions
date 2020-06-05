@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using BasketApi.Data.Context;
 using BasketApi.Data.Entites;
 using BasketApi.Domain.Dtos.Request;
 using BasketApi.Domain.Dtos.Response;
-using AutoMapper;
-using BasketApi.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Qtyb.Common.EventBus.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BasketApi.Controllers
 {
@@ -19,16 +18,16 @@ namespace BasketApi.Controllers
     public class BasketsController : ControllerBase
     {
         private readonly BasketContext _context;
-        private readonly IRabbitMqPublisher _rabbitMqPublisher;
+        private readonly IEventBusPublisher _eventBusPublisher;
         private readonly IMapper _mapper;
 
         public BasketsController(
             BasketContext context,
-            IRabbitMqPublisher rabbitMqPublisher, 
+            IEventBusPublisher eventBusPublisher,
             IMapper mapper)
         {
             _context = context;
-            _rabbitMqPublisher = rabbitMqPublisher;
+            _eventBusPublisher = eventBusPublisher;
             _mapper = mapper;
         }
 
@@ -36,14 +35,14 @@ namespace BasketApi.Controllers
         public ActionResult SendObj()
         {
             var basket = new Basket { Guid = Guid.NewGuid(), Id = 5, Name = "Send Test" };
-            _rabbitMqPublisher.Publish(basket, "ProductCreated");
+            _eventBusPublisher.Publish(basket, "ProductCreated");
             return Ok();
         }
 
         [HttpGet("sendTxt")]
         public ActionResult SendTxt()
         {
-            _rabbitMqPublisher.Publish("message send", "ProductCreated");
+            _eventBusPublisher.Publish("message send", "ProductCreated");
             return Ok();
         }
 
