@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System;
 
-namespace BasketApi.Domain.Events.Subscribe
+namespace ProductApi.Domain.Events.Product
 {
     public class ProductCreated : IRequest<Unit>
     {

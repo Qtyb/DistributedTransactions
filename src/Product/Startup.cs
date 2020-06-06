@@ -1,4 +1,5 @@
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ProductApi.Data.Context;
+using Qtyb.Common.EventBus.Extensions;
+using System.Reflection;
 
 namespace ProductApi
 {
@@ -27,6 +30,7 @@ namespace ProductApi
 
             services.AddControllers();
 
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSwaggerGen(c =>
@@ -34,6 +38,7 @@ namespace ProductApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = nameof(ProductApi), Version = "v1" });
             });
 
+            services.AddEventBus();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

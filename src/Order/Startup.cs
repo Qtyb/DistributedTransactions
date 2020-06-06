@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OrderApi.Data.Context;
+using OrderApi.Domain.Events.Product;
+using Qtyb.Common.EventBus.Extensions;
+using Qtyb.Common.EventBus.Interfaces;
+using System.Reflection;
 
 namespace OrderApi
 {
@@ -33,6 +31,7 @@ namespace OrderApi
                 opt.UseSqlServer(Configuration.GetConnectionString("OrderContext")));
             services.AddControllers();
 
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSwaggerGen(c =>
@@ -40,6 +39,7 @@ namespace OrderApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = nameof(OrderApi), Version = "v1" });
             });
 
+            services.AddEventBus();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +66,10 @@ namespace OrderApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            //TODO 3: Move to extension method
+            var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
+            subsriberService.Subscribe<ProductCreated>("ProductCreated");
         }
     }
 }

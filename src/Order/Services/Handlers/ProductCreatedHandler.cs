@@ -1,10 +1,10 @@
-﻿using BasketApi.Domain.Events.Product;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using OrderApi.Domain.Events.Product;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BasketApi.Services.Handlers
+namespace OrderApi.Services.Handlers
 {
     public class ProductCreatedHandler : IRequestHandler<ProductCreated>
     {

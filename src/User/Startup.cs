@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Qtyb.Common.EventBus.Extensions;
+using System.Reflection;
 using UserApi.Data.Context;
 
 namespace UserApi
@@ -33,6 +29,7 @@ namespace UserApi
                 opt.UseSqlServer(Configuration.GetConnectionString("UserContext")));
             services.AddControllers();
 
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSwaggerGen(c =>
@@ -40,6 +37,7 @@ namespace UserApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = nameof(UserApi), Version = "v1" });
             });
 
+            services.AddEventBus();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

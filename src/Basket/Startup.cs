@@ -1,6 +1,6 @@
 using AutoMapper;
 using BasketApi.Data.Context;
-using BasketApi.Domain.Events.Subscribe;
+using BasketApi.Domain.Events.Product;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

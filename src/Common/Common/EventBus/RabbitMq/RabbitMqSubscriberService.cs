@@ -85,19 +85,18 @@ namespace Qtyb.Common.EventBus.RabbitMq
                 _channel.ModelShutdown += OnModelShutdown;
 
                 _logger.LogInformation($"RabbitMq channel is established");
-
-
-                //TODO 2: CallbackException handle
             }
         }
 
         private void OnModelShutdown(object sender, ShutdownEventArgs e)
         {
+            //TODO 2: finish
             _logger.LogError($"RabbitMq channel shutdown \nReply: [{e.ReplyText}]\nCause: [{e.Cause}]\nToString(): [{e}]");
         }
 
         private void OnChannelCallbackException(object sender, CallbackExceptionEventArgs e)
         {
+            //TODO 2: finish
             _logger.LogError($"RabbitMq channel callback exception occured.\nException: [{e.Exception}]\nDetails: [{e.Detail}]\nToString(): [{e}]");
         }
 

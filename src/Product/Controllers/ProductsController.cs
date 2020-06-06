@@ -5,6 +5,9 @@ using ProductApi.Data.Context;
 using ProductApi.Data.Entities;
 using ProductApi.Domain.Dtos;
 using ProductApi.Domain.Dtos.Request;
+using ProductApi.Domain.Events.Product;
+using Qtyb.Common.EventBus.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,14 +19,25 @@ namespace ProductApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductContext _context;
+        private readonly IEventBusPublisher _eventBusPublisher;
         private readonly IMapper _mapper;
 
         public ProductsController(
             ProductContext context,
+            IEventBusPublisher eventBusPublisher,
             IMapper mapper)
         {
             _context = context;
+            _eventBusPublisher = eventBusPublisher;
             _mapper = mapper;
+        }
+
+        [HttpGet("sendObj")]
+        public ActionResult SendObj()
+        {
+            var @event = new ProductCreated { Guid = Guid.NewGuid(), Id = 5, Name = "Twarożek" };
+            _eventBusPublisher.Publish(@event, "ProductCreated");
+            return Ok();
         }
 
         [HttpGet]
