@@ -39,13 +39,6 @@ namespace BasketApi.Controllers
             return Ok();
         }
 
-        [HttpGet("sendTxt")]
-        public ActionResult SendTxt()
-        {
-            _eventBusPublisher.Publish("message send", "ProductCreated");
-            return Ok();
-        }
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BasketResponseDto>>> GetBaskets()
         {
@@ -81,16 +74,9 @@ namespace BasketApi.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!BasketExists(id))
             {
-                if (!BasketExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();

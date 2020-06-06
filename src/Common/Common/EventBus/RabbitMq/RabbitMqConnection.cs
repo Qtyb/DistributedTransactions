@@ -10,7 +10,6 @@ namespace Qtyb.Common.EventBus.RabbitMq
         private readonly IConfigurationSection _rabbitMqConfig;
         private readonly ILogger<RabbitMqConnection> _logger;
         private IConnection _connection;
-        private IModel _channel;
 
         public RabbitMqConnection(
             IConfiguration configuration,
@@ -20,36 +19,34 @@ namespace Qtyb.Common.EventBus.RabbitMq
             _logger = logger;
         }
 
-        public IModel Connect()
+
+        public IConnection GetConnection()
         {
-            _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(Connect)} invoked");
+            _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(GetConnection)} invoked");
             if (_connection is null || _connection.IsOpen is false)
             {
                 _logger.LogInformation($"{nameof(RabbitMqConnection)} is not established." +
                     $"Trying to establish connection");
+                
+                _connection?.Close();
                 _connection?.Dispose();
+                _connection = null;
+
                 InitializeConnection();
             }
 
-            if (_channel is null || _channel.IsClosed)
-            {
-                _logger.LogInformation($"{nameof(RabbitMqConnection)} is not established." +
-                    $"Trying to establish connection");
-                _channel?.Dispose();
-                _channel = _connection.CreateModel();
-            }
-
-            return _channel;
+            return _connection;
         }
 
         private void InitializeConnection()
         {
             _logger.LogInformation($"{nameof(RabbitMqConnection)}.{nameof(InitializeConnection)} invoked");
-            //TODO 2: GET FROM APPSETTINGS
+
             var factory = new ConnectionFactory()
             {
                 HostName = _rabbitMqConfig["Hostname"],
-                DispatchConsumersAsync = true
+                DispatchConsumersAsync = true,
+                AutomaticRecoveryEnabled = true
             };
             _connection = factory.CreateConnection();
 

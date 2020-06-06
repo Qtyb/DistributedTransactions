@@ -68,7 +68,7 @@ namespace BasketApi
             });
 
             //TODO 3: Move to extension method
-            var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubcriber>();
+            var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
             subsriberService.Subscribe<ProductCreated>("ProductCreated");
         }
     }

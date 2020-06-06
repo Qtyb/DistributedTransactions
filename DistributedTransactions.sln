@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShippingApi", "src\Shipping
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserApi", "src\User\UserApi.csproj", "{1DC1F911-C669-4314-B6A5-860994561A7B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qtyb.Common", "src\Common\Common\Qtyb.Common.csproj", "{A3AD0541-5F1A-43FE-A1F7-8A473FD9CA85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1DC1F911-C669-4314-B6A5-860994561A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DC1F911-C669-4314-B6A5-860994561A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DC1F911-C669-4314-B6A5-860994561A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3AD0541-5F1A-43FE-A1F7-8A473FD9CA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3AD0541-5F1A-43FE-A1F7-8A473FD9CA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3AD0541-5F1A-43FE-A1F7-8A473FD9CA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3AD0541-5F1A-43FE-A1F7-8A473FD9CA85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

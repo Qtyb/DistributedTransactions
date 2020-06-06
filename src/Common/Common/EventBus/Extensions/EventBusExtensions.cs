@@ -10,8 +10,8 @@ namespace Qtyb.Common.EventBus.Extensions
         public static void AddEventBus(this IServiceCollection services)
         {
             services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
-            services.AddTransient<IEventBusSubcriber, RabbitMqSubscriberService>();
-            services.AddTransient<IEventBusPublisher, RabbitMqPublisher>();
+            services.AddSingleton<IEventBusSubscriber, RabbitMqSubscriberService>();
+            services.AddSingleton<IEventBusPublisher, RabbitMqPublisherService>();
         }
     }
 }
