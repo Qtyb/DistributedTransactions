@@ -66,6 +66,21 @@ namespace ProductApi.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
+        [HttpPost("outbox")]
+        public async Task<ActionResult<ProductResponseDto>> PostProductOutbox(ProductRequestDto productRequestDto)
+        {
+            var product = _mapper.Map<Product>(productRequestDto);
+            _context.Products.Add(product);
+
+            var data = JsonSerializer.Serialize(product);
+            AddProductMessage(data, "http://localhost:6010/api/products", Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod.Post);
+            AddProductMessage(data, "http://localhost:6020/api/products", Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod.Post);
+            AddProductMessage(data, "http://localhost:6030/api/products", Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod.Post);
+            AddProductMessage(data, "http://localhost:6040/api/products", Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod.Post);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        }
 
         [HttpGet("sendObj")]
         public ActionResult SendObj()
@@ -138,6 +153,12 @@ namespace ProductApi.Controllers
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
+        }
+
+        private void AddProductMessage(string data, string url, Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod method)
+        {
+            var productMessage = new OutboxMessage(data, url, method);
+            _context.OutboxMessages.Add(productMessage);
         }
     }
 }

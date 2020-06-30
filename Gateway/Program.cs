@@ -9,6 +9,13 @@ namespace Gateway
 {
     class Program
     {
+        enum TransactionType
+        {
+            Default,
+            OutboxPattern,
+            TwoPhaseCommit,
+            Saga
+        }
         static async Task Main(string[] args)
         {
             if (args.Length == 0)
@@ -17,13 +24,13 @@ namespace Gateway
                 return;
             }
 
+            Enum.TryParse(args[1], out TransactionType transactionType);
             var seconds = int.Parse(args[0]);
             var finishDate = DateTime.Now.AddSeconds(seconds);
-            
-            var client = new HttpClient();
-
-            long index = 1;
             Console.WriteLine($"Gateway started sending requests until {finishDate}");
+
+            var client = new HttpClient();
+            long index = 1;
             while (DateTime.Now < finishDate)
             {
                 var product = new { Name = $"{index}" };
@@ -32,9 +39,24 @@ namespace Gateway
                     Encoding.UTF8,
                     "application/json");
 
-                using var httpResponse = await client.PostAsync("http://localhost:6000/api/products", content);
+                if (transactionType == TransactionType.Default)
+                    await HandleDefaultTransaction(content, client);
+
+                else if (transactionType == TransactionType.OutboxPattern)
+                    await HandleOutboxPattern(content, client);
+
                 index++;
             }
+        }
+
+        static async Task HandleDefaultTransaction(StringContent content, HttpClient client)
+        {
+            using var httpResponse = await client.PostAsync("http://localhost:6000/api/products", content);
+        }
+
+        static async Task HandleOutboxPattern(StringContent content, HttpClient client)
+        {
+            using var httpResponse = await client.PostAsync("http://localhost:6000/api/products/outbox", content);
         }
     }
 }

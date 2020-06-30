@@ -25,6 +25,9 @@ namespace ShippingApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostProduct(ProductRequestDto productRequestDto)
         {
+            if (productRequestDto.Name.EndsWith('1'))
+                return new ConflictResult();
+
             var product = _mapper.Map<Product>(productRequestDto);
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
