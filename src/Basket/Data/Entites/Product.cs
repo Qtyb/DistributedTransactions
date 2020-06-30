@@ -11,5 +11,6 @@ namespace BasketApi.Data.Entites
 
         public Guid Guid { get; set; }
         public string Name { get; set; }
+        public DateTime Date { get; set; }
     }
 }

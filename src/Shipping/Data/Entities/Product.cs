@@ -11,5 +11,6 @@ namespace ShippingApi.Data.Entities
 
         public Guid Guid { get; set; }
         public string Name { get; set; }
+        public DateTime Date { get; set; }
     }
 }

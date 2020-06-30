@@ -30,6 +30,7 @@ namespace ProductApi
 
             services.AddControllers();
 
+            services.AddHttpClient();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(typeof(Startup));
 
@@ -53,7 +54,7 @@ namespace ProductApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

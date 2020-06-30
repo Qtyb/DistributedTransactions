@@ -10,6 +10,9 @@ using Qtyb.Common.EventBus.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ProductApi.Controllers
@@ -20,17 +23,49 @@ namespace ProductApi.Controllers
     {
         private readonly ProductContext _context;
         private readonly IEventBusPublisher _eventBusPublisher;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
 
         public ProductsController(
             ProductContext context,
             IEventBusPublisher eventBusPublisher,
+            IHttpClientFactory httpClientFactory,
             IMapper mapper)
         {
             _context = context;
             _eventBusPublisher = eventBusPublisher;
+            _httpClientFactory = httpClientFactory;
             _mapper = mapper;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductResponseDto>> PostProduct(ProductRequestDto productRequestDto)
+        {
+            var product = _mapper.Map<Product>(productRequestDto);
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            var client = _httpClientFactory.CreateClient();
+
+            var content = new StringContent(
+                JsonSerializer.Serialize(product),
+                Encoding.UTF8,
+                "application/json");
+
+            try
+            {
+                client.PostAsync("http://localhost:6010/api/products", content);
+                client.PostAsync("http://localhost:6020/api/products", content);
+                client.PostAsync("http://localhost:6030/api/products", content);
+                client.PostAsync("http://localhost:6040/api/products", content);
+            }
+            catch (Exception)
+            {
+            }
+
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        }
+
 
         [HttpGet("sendObj")]
         public ActionResult SendObj()
@@ -82,15 +117,7 @@ namespace ProductApi.Controllers
             return NoContent();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ProductResponseDto>> PostProduct(ProductRequestDto productRequestDto)
-        {
-            var product = _mapper.Map<Product>(productRequestDto);
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
-        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ProductResponseDto>> DeleteProduct(int id)
