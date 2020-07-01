@@ -10,9 +10,7 @@ namespace BasketApi.Data.Context
         {
         }
 
-        public DbSet<Basket> Baskets { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<OutboxEvent> OutboxEvents { get; set; }
     }
 }
