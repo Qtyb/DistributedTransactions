@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Interfaces\" />
-    <Folder Include="Services\Handlers\" />
   </ItemGroup>
 
   <ItemGroup>

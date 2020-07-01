@@ -1,9 +1,6 @@
 ﻿using BasketApi.Data.Entites;
+using BasketApi.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BasketApi.Data.Context
 {
@@ -12,9 +9,10 @@ namespace BasketApi.Data.Context
         public BasketContext(DbContextOptions options) : base(options)
         {
         }
+
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
-
+        public DbSet<OutboxEvent> OutboxEvents { get; set; }
     }
 }

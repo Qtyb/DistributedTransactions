@@ -15,6 +15,6 @@ namespace ShippingApi.Data.Context
         public DbSet<Shipping> Shippings { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
-
+        public DbSet<OutboxEvent> OutboxEvents { get; set; }
     }
 }

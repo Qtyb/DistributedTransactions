@@ -11,5 +11,7 @@ namespace UserApi.Data.Context
 
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<OutboxEvent> OutboxEvents { get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using BasketApi.Data.Context;
 using BasketApi.Domain.Events.Product;
+using BasketApi.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,7 @@ namespace BasketApi
             });
 
             services.AddEventBus();
+            services.AddHostedService<OutboxEventHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +72,7 @@ namespace BasketApi
             //TODO 3: Move to extension method
             var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
             subsriberService.Subscribe<ProductCreated>("ProductCreated");
+            subsriberService.Subscribe<ProductRejected>("ProductRejected");
         }
     }
 }
