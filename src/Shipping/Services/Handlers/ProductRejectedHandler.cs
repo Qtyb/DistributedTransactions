@@ -3,13 +3,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ProductApi.Data.Context;
-using ProductApi.Data.Entities;
-using ProductApi.Domain.Events.Product;
+using ShippingApi.Data.Context;
+using ShippingApi.Data.Entities;
+using ShippingApi.Domain.Events.Product;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ProductApi.Services.Handlers
+namespace ShippingApi.Services.Handlers
 {
     public class ProductRejectedHandler : IRequestHandler<ProductRejected>
     {
@@ -32,7 +32,7 @@ namespace ProductApi.Services.Handlers
             _logger.LogInformation($"---- Received {nameof(ProductRejected)} message: Product.Guid = [{productRejected.Guid}] ----");
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<ProductContext>();
+                var context = scope.ServiceProvider.GetRequiredService<ShippingContext>();
                 var product = await context.Products.FirstOrDefaultAsync(product => product.Guid.Equals(productRejected.Guid));
 
                 if (product != null)

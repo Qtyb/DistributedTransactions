@@ -17,7 +17,7 @@ namespace ProductApi.Services
         private readonly IEventBusPublisher _eventBusPublisher;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        private const int DelayInMs = 10_000;
+        private const int DelayInMs = 20_000;
 
         public OutboxEventHostedService(
             ILogger<OutboxEventHostedService> logger,
@@ -60,8 +60,11 @@ namespace ProductApi.Services
                                 @event.ProcessedOn = null;
                                 @event.Error = ex.ToString();
                             }
-
-                            await context.SaveChangesAsync();
+                            finally
+                            {
+                                _logger.LogInformation($"Outbox Event Hosted Service processed with id {@event.Id}");
+                                await context.SaveChangesAsync();
+                            }
                         }
                     }
                 }

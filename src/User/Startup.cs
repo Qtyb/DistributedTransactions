@@ -68,8 +68,8 @@ namespace UserApi
             });
 
             var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
-            subsriberService.Subscribe<ProductCreated>("ProductCreated");
-            subsriberService.Subscribe<ProductRejected>("ProductRejected");
+            subsriberService.Subscribe<ProductCreated>();
+            subsriberService.BindQueue<ProductRejected>();
         }
     }
 }

@@ -35,7 +35,10 @@ namespace ShippingApi.Services.Handlers
             try
             {
                 if (productCreated.Name.EndsWith('1'))
-                    throw new System.Exception("PRODUCT ENDS WITH '1' !!! THAT IS NOT VALID");
+                {
+                    _logger.LogError($"---- PRODUCT ENDS WITH '1' !!! THAT IS NOT VALID: Product.Guid = [{productCreated.Guid}] ----");
+                    throw new System.Exception($"PRODUCT ENDS WITH '1' !!! THAT IS NOT VALID: Product.Guid = [{productCreated.Guid}]");
+                }
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
@@ -50,6 +53,7 @@ namespace ShippingApi.Services.Handlers
             }
             catch (System.Exception ex)
             {
+                _logger.LogError($"Exception :( Guid = [{productCreated.Guid}]");
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<ShippingContext>();
@@ -58,8 +62,11 @@ namespace ShippingApi.Services.Handlers
                     var data = JsonSerializer.Serialize(productRejected);
                     var productEvent = new OutboxEvent(data, "ProductRejected");
                     context.OutboxEvents.Add(productEvent);
+
+                    await context.SaveChangesAsync();
                 }
             }
+
             return await Task.FromResult(Unit.Value);
         }
     }

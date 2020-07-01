@@ -17,7 +17,7 @@ namespace ProductApi.Services
         private readonly IEventBusPublisher _eventBusPublisher;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        private const int DelayInMs = 10_000;
+        private const int DelayInMs = 15_000;
 
         public OutboxEventHostedService(
             ILogger<OutboxEventHostedService> logger,

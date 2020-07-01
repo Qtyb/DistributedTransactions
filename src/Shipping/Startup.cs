@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ProductApi.Services;
 using Qtyb.Common.EventBus.Extensions;
 using Qtyb.Common.EventBus.Interfaces;
 using ShippingApi.Data.Context;
@@ -47,6 +48,7 @@ namespace ShippingApi
             });
 
             services.AddEventBus();
+            services.AddHostedService<OutboxEventHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,8 +77,8 @@ namespace ShippingApi
             });
 
             var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
-            subsriberService.Subscribe<ProductCreated>("ProductCreated");
-            subsriberService.Subscribe<ProductRejected>("ProductRejected");
+            subsriberService.Subscribe<ProductCreated>();
+            subsriberService.BindQueue<ProductRejected>();
         }
     }
 }

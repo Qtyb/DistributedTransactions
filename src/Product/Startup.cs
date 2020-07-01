@@ -73,7 +73,7 @@ namespace ProductApi
             });
 
             var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
-            subsriberService.Subscribe<ProductRejected>("ProductRejected");
+            subsriberService.Subscribe<ProductRejected>();
         }
     }
 }
