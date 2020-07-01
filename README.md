@@ -12,11 +12,10 @@ Project for university telecomunications conference
 | Db            | 1433          |
 | RabbitMq      | 5672          |
 | RabbitMqGui   | 15672         |
-| Jenkins       | 8080          |
 
 
 ## Docker configuration
-For now RabbitMq Jenkins MsSql Server are configured in docker-compose.yml
+For now RabbitMq MsSql Server are configured in docker-compose.yml
 Move to /docker and run them with
 ```
 docker-compose up

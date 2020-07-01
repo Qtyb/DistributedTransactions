@@ -18,17 +18,3 @@ services:
         volumes:
             - ./data/rabbitmq:/var/lib/rabbitmq
             - ./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins
-    jenkins:
-        image: jenkins/jenkins:lts
-        container_name: jenkins
-        user: jenkins
-        volumes:
-            - ./data/jenkins:/var/jenkins_home
-            - /var/run/docker.sock:/var/run/docker.sock
-        environment:
-            JENKINS_HOST_HOME: "data/jenkins"
-        ports:
-            - 8080:8080
-            - 5000:5000
-            - 50000:50000
-
