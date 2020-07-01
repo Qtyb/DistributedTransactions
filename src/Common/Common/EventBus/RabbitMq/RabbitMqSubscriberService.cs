@@ -58,15 +58,16 @@ namespace Qtyb.Common.EventBus.RabbitMq
                 var message = JsonSerializer.Deserialize<T>(body);
 
                 await _mediator.Send(message);
+                _channel.BasicAck(@event.DeliveryTag, false);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while retrieving message from queue.");
+                _channel.BasicNack(@event.DeliveryTag, false, true);
             }
             finally
             {
                 //EnsureConnectionToRabbitMq();
-                _channel.BasicAck(@event.DeliveryTag, false);
             }
         }
 
