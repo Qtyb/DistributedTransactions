@@ -25,13 +25,12 @@ namespace Gateway
             }
 
             Enum.TryParse(args[1], out TransactionType transactionType);
-            var seconds = int.Parse(args[0]);
-            var finishDate = DateTime.Now.AddSeconds(seconds);
-            Console.WriteLine($"Gateway started sending requests until {finishDate}");
+            var numberOfRequests = int.Parse(args[0]);
+            Console.WriteLine($"Gateway started sending {numberOfRequests} requests");
 
             var client = new HttpClient();
-            long index = 1;
-            while (DateTime.Now < finishDate)
+            long index = 0;
+            while (index < numberOfRequests)
             {
                 var product = new { Name = $"{index}" };
                 var content = new StringContent(
