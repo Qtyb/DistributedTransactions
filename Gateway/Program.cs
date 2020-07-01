@@ -29,8 +29,8 @@ namespace Gateway
             Console.WriteLine($"Gateway started sending {numberOfRequests} requests");
 
             var client = new HttpClient();
-            long index = 0;
-            while (index < numberOfRequests)
+            long index = 1;
+            while (index <= numberOfRequests)
             {
                 var product = new { Name = $"{index}" };
                 var content = new StringContent(
