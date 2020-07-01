@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductApi.Data.Context;
 
 namespace ProductApi.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20200701174545_OutboxEvent_added")]
+    partial class OutboxEvent_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

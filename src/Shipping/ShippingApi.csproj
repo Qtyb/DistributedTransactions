@@ -24,8 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Interfaces\" />
-    <Folder Include="Domain\Events\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

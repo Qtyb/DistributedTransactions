@@ -16,7 +16,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Qtyb.Common.EventBus.Extensions;
+using Qtyb.Common.EventBus.Interfaces;
 using ShippingApi.Data.Context;
+using ShippingApi.Domain.Events.Product;
 
 namespace ShippingApi
 {
@@ -71,6 +73,9 @@ namespace ShippingApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
+            subsriberService.Subscribe<ProductCreated>("ProductCreated");
         }
     }
 }

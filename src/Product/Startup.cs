@@ -41,7 +41,8 @@ namespace ProductApi
             });
 
             services.AddEventBus();
-            services.AddHostedService<OutboxHostedService>();
+            services.AddHostedService<OutboxMessageHostedService>();
+            services.AddHostedService<OutboxEventHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

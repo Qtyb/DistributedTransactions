@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Interfaces\" />
-    <Folder Include="Domain\Mappings\" />
     <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 

@@ -1,28 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProductApi.Data.Context;
-using Swashbuckle.Swagger;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ProductApi.Services
 {
-    public class OutboxHostedService : BackgroundService
+    public class OutboxMessageHostedService : BackgroundService
     {
-        private readonly ILogger<OutboxHostedService> _logger;
+        private readonly ILogger<OutboxMessageHostedService> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public OutboxHostedService(
-            ILogger<OutboxHostedService> logger,
+        private const int DelayInMs = 10_000;
+
+        public OutboxMessageHostedService(
+            ILogger<OutboxMessageHostedService> logger,
             IHttpClientFactory httpClientFactory,
             IServiceScopeFactory serviceScopeFactory)
         {
@@ -33,14 +32,13 @@ namespace ProductApi.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Outbox Hosted Service is running");
+            _logger.LogInformation("Outbox Message Hosted Service is running");
 
             await BackgroundProcessing(stoppingToken);
         }
 
         private async Task BackgroundProcessing(CancellationToken stoppingToken)
         {
-            var delayInMs = 10_000;
             var client = _httpClientFactory.CreateClient();
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -69,30 +67,30 @@ namespace ProductApi.Services
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError(ex, $"Outbox Hosted Service occurred error during sending message with id [{message.Id}]");
+                                _logger.LogError(ex, $"Outbox Message Hosted Service occurred error during sending message with id [{message.Id}]");
                                 message.ProcessedOn = null;
                                 message.Error = ex.ToString();
                             }
-                            
+
                             await context.SaveChangesAsync();
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Outbox Hosted Service occurred error");
+                    _logger.LogError(ex, "Outbox Message Hosted Service occurred error");
                 }
                 finally
                 {
-                    _logger.LogInformation($"Outbox Hosted Service is going to sleep for {delayInMs}ms");
-                    await Task.Delay(delayInMs, stoppingToken);
+                    _logger.LogInformation($"Outbox Message Hosted Service is going to sleep for {DelayInMs}ms");
+                    await Task.Delay(DelayInMs, stoppingToken);
                 }
             }
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Outbox Hosted Service is stopping.");
+            _logger.LogInformation("Outbox Message Hosted Service is stopping.");
 
             await base.StopAsync(stoppingToken);
         }

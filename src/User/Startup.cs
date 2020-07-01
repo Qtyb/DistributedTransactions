@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Qtyb.Common.EventBus.Extensions;
+using Qtyb.Common.EventBus.Interfaces;
 using System.Reflection;
 using UserApi.Data.Context;
+using UserApi.Domain.Events.Product;
 
 namespace UserApi
 {
@@ -64,6 +66,9 @@ namespace UserApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            var subsriberService = app.ApplicationServices.GetRequiredService<IEventBusSubscriber>();
+            subsriberService.Subscribe<ProductCreated>("ProductCreated");
         }
     }
 }

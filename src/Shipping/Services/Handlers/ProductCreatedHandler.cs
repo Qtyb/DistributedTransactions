@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using BasketApi.Data.Context;
-using BasketApi.Data.Entites;
-using BasketApi.Domain.Events.Product;
+using ShippingApi.Data.Context;
+using ShippingApi.Data.Entities;
+using ShippingApi.Domain.Events.Product;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace BasketApi.Services.Handlers
+namespace ShippingApi.Services.Handlers
 {
     public class ProductCreatedHandler : IRequestHandler<ProductCreated>
     {
@@ -31,7 +31,7 @@ namespace BasketApi.Services.Handlers
             _logger.LogInformation($"---- Received {nameof(ProductCreated)} message: Product.Guid = [{productCreated.Guid}] ----");
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<BasketContext>();
+                var context = scope.ServiceProvider.GetRequiredService<ShippingContext>();
 
                 var product = _mapper.Map<Product>(productCreated);
                 context.Products.Add(product);

@@ -2,21 +2,21 @@
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Gateway
 {
-    class Program
+    internal class Program
     {
-        enum TransactionType
+        private enum TransactionType
         {
             Default,
             OutboxPattern,
-            TwoPhaseCommit,
-            Saga
+            Choreography,
+            Orchestration
         }
-        static async Task Main(string[] args)
+
+        private static async Task Main(string[] args)
         {
             if (args.Length == 0)
             {
@@ -41,22 +41,37 @@ namespace Gateway
 
                 if (transactionType == TransactionType.Default)
                     await HandleDefaultTransaction(content, client);
-
                 else if (transactionType == TransactionType.OutboxPattern)
                     await HandleOutboxPattern(content, client);
+                else if (transactionType == TransactionType.Choreography)
+                    await HandleChoreographySaga(content, client);
+                else if (transactionType == TransactionType.Orchestration)
+                    await HandleOrchestrationSaga(content, client);
+                else
+                    throw new Exception($"Undefined transaction type: [{transactionType}]");
 
                 index++;
             }
         }
 
-        static async Task HandleDefaultTransaction(StringContent content, HttpClient client)
+        private static async Task HandleDefaultTransaction(StringContent content, HttpClient client)
         {
             using var httpResponse = await client.PostAsync("http://localhost:6000/api/products", content);
         }
 
-        static async Task HandleOutboxPattern(StringContent content, HttpClient client)
+        private static async Task HandleOutboxPattern(StringContent content, HttpClient client)
         {
             using var httpResponse = await client.PostAsync("http://localhost:6000/api/products/outbox", content);
+        }
+
+        private static async Task HandleChoreographySaga(StringContent content, HttpClient client)
+        {
+            using var httpResponse = await client.PostAsync("http://localhost:6000/api/products/choreography", content);
+        }
+
+        private static async Task HandleOrchestrationSaga(StringContent content, HttpClient client)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -30,9 +30,7 @@
   <ItemGroup>
     <Folder Include="Data\Interfaces\" />
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Mappings\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

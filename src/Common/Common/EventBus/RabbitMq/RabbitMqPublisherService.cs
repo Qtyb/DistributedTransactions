@@ -36,6 +36,14 @@ namespace Qtyb.Common.EventBus.RabbitMq
             SendRabbitMqMessage(message, routingKey);
         }
 
+        public void Publish(string message, string routingKey)
+        {
+            _logger.LogInformation($"{nameof(Publish)} with\n{nameof(routingKey)}: [{routingKey}]\n{nameof(message)}: [{message}]");
+
+            EnsureConnectionToRabbitMq();
+            SendRabbitMqMessage(message, routingKey);
+        }
+
         private void SendRabbitMqMessage(string message, string routingKey)
         {
             var body = Encoding.UTF8.GetBytes(message);

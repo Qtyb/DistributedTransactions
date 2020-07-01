@@ -82,6 +82,23 @@ namespace ProductApi.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
+        [HttpPost("choreography")]
+        public async Task<ActionResult> PostProductSagaChoreography(ProductRequestDto productRequestDto)
+        {
+            var @event = new ProductCreated { Guid = Guid.NewGuid(), Id = 5, Name = "Twarożek" };
+            var product = _mapper.Map<Product>(productRequestDto);
+            _context.Products.Add(product);
+
+            var data = JsonSerializer.Serialize(product);
+            var productEvent = new OutboxEvent(data, "ProductCreated");
+            _context.OutboxEvents.Add(productEvent);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
         [HttpGet("sendObj")]
         public ActionResult SendObj()
         {
