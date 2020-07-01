@@ -13,6 +13,23 @@ Project for university telecomunications conference
 | RabbitMq      | 5672          |
 | RabbitMqGui   | 15672         |
 
+## How to run
+Install .net core 3 SDK.
+Run each service (Product, Basket, Order, Shipping, User) with 
+```
+dotnet run
+```
+
+### Gateway
+Gateway is a console app, which simulates client requests.
+It takes 2 numeric arguments:
+ - First - number of requests - positive integer
+ - Second - type of integration - 0: http request, 1: http request with Outbox Pattern, 2: Saga choreography with Outbox Pattern
+
+Example 
+```
+dotnet run 100 2
+```
 
 ## Docker configuration
 For now RabbitMq MsSql Server are configured in docker-compose.yml
@@ -50,3 +67,4 @@ All microservices will use the same direct exchange to send messages.
 
 ### Messages
  - ProductCreated
+ - ProductRejected
